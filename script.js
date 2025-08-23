@@ -1,4 +1,8 @@
-const searchBtn = document.getElementById("searchBtn");
+ "scripts": {
+  "start": "node server.js"
+}
+
+ const searchBtn = document.getElementById("searchBtn");
 const ingredientInput = document.getElementById("ingredientInput");
 const recipesContainer = document.getElementById("recipesContainer");
 
