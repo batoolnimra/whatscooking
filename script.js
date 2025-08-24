@@ -1,6 +1,4 @@
- "scripts": {
-  "start": "node server.js"
-}
+
 
  const searchBtn = document.getElementById("searchBtn");
 const ingredientInput = document.getElementById("ingredientInput");
@@ -14,7 +12,8 @@ searchBtn.addEventListener("click", async () => {
   }
 
   try {
-    const res = await fetch(`http://localhost:3000/recipes?ingredients=${encodeURIComponent(ingredients)}`);
+const res = await fetch(`https://recipefinder-production-cd16.up.railway.app/recipes?ingredients=${encodeURIComponent(ingredients)}`);
+;
     const data = await res.json();
 
     recipesContainer.innerHTML = "";

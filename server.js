@@ -2,7 +2,7 @@ require("dotenv").config(); // must be at top
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
-
+app.use(cors());
 const app = express();
 app.use(cors());
 
