@@ -1,6 +1,4 @@
-
-
- const searchBtn = document.getElementById("searchBtn");
+const searchBtn = document.getElementById("searchBtn");
 const ingredientInput = document.getElementById("ingredientInput");
 const recipesContainer = document.getElementById("recipesContainer");
 
@@ -12,12 +10,19 @@ searchBtn.addEventListener("click", async () => {
   }
 
   try {
-    const res = await fetch(`http://localhost:3000/recipes?ingredients=${encodeURIComponent(ingredients)}`);
+    const res = await fetch(
+      `https://whatscooking-patros-projects-bdfb20aa.vercel.app/recipes?ingredients=${encodeURIComponent(ingredients)}`,
+      {
+        method: "GET",
+        credentials: "include"   // 🔑 include cookies
+      }
+    );
+
     const data = await res.json();
 
     recipesContainer.innerHTML = "";
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       recipesContainer.innerHTML = "<p class='text-gray-500 text-center w-full'>😢 No recipes found</p>";
       return;
     }
@@ -26,7 +31,6 @@ searchBtn.addEventListener("click", async () => {
       const card = document.createElement("div");
       card.className = "anime-card bg-pink-50 rounded-2xl shadow-md p-4";
 
-      // 🍼 fallback in case link is missing
       const recipeLink = recipe.link 
         ? recipe.link 
         : `https://spoonacular.com/recipes/${recipe.title.replace(/ /g, "-")}-${recipe.id}`;
@@ -40,8 +44,9 @@ searchBtn.addEventListener("click", async () => {
 
       recipesContainer.appendChild(card);
     });
+
   } catch (err) {
-    console.error("Error fetching recipes:", err);
+    console.error("Error fetching recipes:", err.message || err);
     recipesContainer.innerHTML = "<p class='text-red-500'>💔 Error fetching recipes</p>";
   }
 });

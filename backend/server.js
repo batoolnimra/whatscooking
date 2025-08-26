@@ -1,56 +1,52 @@
-require("dotenv").config(); // must be at top
 const express = require("express");
-const axios = require("axios");
 const cors = require("cors");
+const fetch = require("node-fetch");
 
 const app = express();
-app.use(cors());
 
-const PORT = 3000;
+// ✅ CORS setup (allow local + deployed frontend)
+app.use(cors({
+  origin: ["http://127.0.0.1:5500", "https://your-frontend.vercel.app"], 
+  credentials: true
+}));
 
-// Loud startup log
-console.log("🚀 HELLO from server.js — starting up!");
+// Parse JSON
+app.use(express.json());
 
-// Home Route
+// Health check route
 app.get("/", (req, res) => {
-  res.send("🍴 Welcome to Recipe Finder API!");
+  res.send("Welcome to Recipe Finder API 🍱");
 });
 
-// Recipes Route
+// Recipes route
 app.get("/recipes", async (req, res) => {
+  const { ingredients } = req.query;
+
+  if (!ingredients) {
+    return res.status(400).json({ error: "❌ Ingredients are required" });
+  }
+
   try {
-    const ingredients = req.query.ingredients;
-    console.log("🟢 /recipes route hit!");
-    console.log("Incoming ingredients:", ingredients);
+    const apiKey = process.env.API_KEY; // ✅ API key from Vercel env variables
 
-    const url = "https://api.spoonacular.com/recipes/findByIngredients";
-    const params = {
-      ingredients: ingredients,
-      number: 5,
-      apiKey: process.env.API_KEY,
-    };
+    // Call Spoonacular API
+    const response = await fetch(
+      `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=5&apiKey=${apiKey}`
+    );
 
-    console.log("➡️ Sending request to Spoonacular with params:", params);
+    if (!response.ok) {
+      throw new Error(`Spoonacular API error: ${response.status}`);
+    }
 
-    const response = await axios.get(url, { params });
+    const data = await response.json();
 
-    console.log("✅ Raw API Data Example:", response.data[0]); // first recipe only
-
-    const recipes = response.data.map(r => ({
-      id: r.id,
-      title: r.title,
-      image: r.image,
-      link: `https://spoonacular.com/recipes/${r.title.replace(/ /g, "-")}-${r.id}`
-    }));
-
-    console.log("✨ Processed Recipe Example:", recipes[0]);
-    res.json(recipes);
-  } catch (error) {
-    console.error("❌ Error from Spoonacular:", error.response?.data || error.message);
-    res.status(500).json({ error: "Something went wrong fetching recipes!" });
+    // Send recipes back to frontend
+    res.json(data);
+  } catch (err) {
+    console.error("❌ Error fetching recipes:", err);
+    res.status(500).json({ error: "💔 Failed to fetch recipes" });
   }
 });
 
-app.listen(PORT, () =>
-  console.log(`🚀 Server running on http://localhost:${PORT}`)
-);
+// ⚠️ Do NOT call app.listen() for Vercel — it handles server start automatically
+module.exports = app;
