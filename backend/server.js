@@ -4,9 +4,9 @@ const fetch = require("node-fetch");
 
 const app = express();
 
-// ✅ CORS setup (allow local + deployed frontend)
+// ✅ CORS config
 app.use(cors({
-  origin: ["http://127.0.0.1:5500", "https://your-frontend.vercel.app"], 
+  origin: ["http://127.0.0.1:5500", "https://your-frontend.vercel.app"],
   credentials: true
 }));
 
@@ -27,9 +27,8 @@ app.get("/recipes", async (req, res) => {
   }
 
   try {
-    const apiKey = process.env.API_KEY; // ✅ API key from Vercel env variables
+    const apiKey = process.env.API_KEY; // ✅ must be set in Vercel
 
-    // Call Spoonacular API
     const response = await fetch(
       `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=5&apiKey=${apiKey}`
     );
@@ -39,14 +38,13 @@ app.get("/recipes", async (req, res) => {
     }
 
     const data = await response.json();
-
-    // Send recipes back to frontend
     res.json(data);
+
   } catch (err) {
     console.error("❌ Error fetching recipes:", err);
     res.status(500).json({ error: "💔 Failed to fetch recipes" });
   }
 });
 
-// ⚠️ Do NOT call app.listen() for Vercel — it handles server start automatically
+// ✅ Export app for Vercel (no app.listen)
 module.exports = app;
