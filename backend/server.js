@@ -8,6 +8,11 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+// ✅ Welcome route
+app.get("/", (req, res) => {
+  res.send("🍳 WhatsCooking backend is running! Use /recipes?ingredients=... to get recipes.");
+});
+
 
 // ✅ Recipe route
 app.get("/recipes", async (req, res) => {
