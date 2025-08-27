@@ -6,7 +6,7 @@ const recipesContainer = document.getElementById("recipesContainer");
 const backendUrl =
   window.location.hostname === "localhost"
     ? "http://localhost:3000"
-    : "https://whatscooking-backend.vercel.app";
+    : "https://whatscooking-three.vercel.app";
 
 searchBtn.addEventListener("click", async () => {
   const ingredients = ingredientInput.value.trim();
