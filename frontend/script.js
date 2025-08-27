@@ -6,7 +6,7 @@ const recipesContainer = document.getElementById("recipesContainer");
 const API_BASE_URL =
   window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
     ? "http://localhost:3000" // local dev
-    : "https://whatscooking-patros-projects-bdfb20aa.vercel.app"; // your Vercel backend
+    : "https://whatscooking-git-main-patros-projects-bdfb20aa.vercel.app/"; // your Vercel backend
 
 searchBtn.addEventListener("click", async () => {
   const ingredients = ingredientInput.value.trim();
