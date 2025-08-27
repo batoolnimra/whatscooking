@@ -2,11 +2,11 @@ const searchBtn = document.getElementById("searchBtn");
 const ingredientInput = document.getElementById("ingredientInput");
 const recipesContainer = document.getElementById("recipesContainer");
 
-// ✅ Auto-detect backend URL (local vs production)
-const API_BASE_URL =
-  window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-    ? "http://localhost:3000" // local dev
-    : "https://whatscooking-git-main-patros-projects-bdfb20aa.vercel.app/"; // your Vercel backend
+// ✅ Auto-detect backend URL
+const backendUrl =
+  window.location.hostname === "localhost"
+    ? "http://localhost:3000"
+    : "https://whatscooking-backend.vercel.app";
 
 searchBtn.addEventListener("click", async () => {
   const ingredients = ingredientInput.value.trim();
@@ -17,7 +17,7 @@ searchBtn.addEventListener("click", async () => {
 
   try {
     const res = await fetch(
-      `${API_BASE_URL}/recipes?ingredients=${encodeURIComponent(ingredients)}`
+      `${backendUrl}/recipes?ingredients=${encodeURIComponent(ingredients)}`
     );
     const data = await res.json();
 
